@@ -4,8 +4,10 @@
 # networksetup -getairportnetwork no longer works on macOS 15+ (SSID redacted)
 # so we identify the network by default gateway IP instead.
 
-STATE_FILE="$HOME/.config/mouse-sensitivity/.last-gateway"
-CONFIG_FILE="$HOME/.config/mouse-sensitivity/networks.conf"
+INSTALL_DIR="$HOME/.config/mouse-sensitivity"
+STATE_FILE="$INSTALL_DIR/.last-gateway"
+CONFIG_FILE="$INSTALL_DIR/networks.conf"
+SET_SPEED="$INSTALL_DIR/set-mouse-speed"
 DEFAULT_SPEED="1.0"
 
 # Load network config: lines of "gateway_ip speed name"
@@ -50,6 +52,7 @@ if [ "$GATEWAY" != "$LAST_GATEWAY" ]; then
     SPEED=$(get_speed_for_gateway "$GATEWAY")
     NETWORK=$(get_network_name "$GATEWAY")
     defaults write -g com.apple.mouse.scaling -float "$SPEED"
+    "$SET_SPEED" "$SPEED"
     echo "$GATEWAY" > "$STATE_FILE"
     osascript -e "display notification \"Mouse speed set to $SPEED\" with title \"Network: $NETWORK\""
 fi

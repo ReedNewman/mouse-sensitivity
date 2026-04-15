@@ -9,15 +9,17 @@ LAUNCH_AGENTS="$HOME/Library/LaunchAgents"
 # Stop existing agent if running
 launchctl bootout "gui/$(id -u)/$PLIST_NAME" 2>/dev/null
 
-# Compile the Swift watcher
-echo "Compiling screen-unlock-trigger..."
+# Compile Swift binaries
+echo "Compiling..."
 swiftc -framework Cocoa "$SCRIPT_DIR/screen-unlock-trigger.swift" -o "$SCRIPT_DIR/screen-unlock-trigger"
+swiftc "$SCRIPT_DIR/set-mouse-speed.swift" -o "$SCRIPT_DIR/set-mouse-speed" 2>/dev/null
 
 # Copy files to config dir
 mkdir -p "$CONFIG_DIR"
 cp "$SCRIPT_DIR/mouse-sensitivity.sh" "$CONFIG_DIR/mouse-sensitivity.sh"
 cp "$SCRIPT_DIR/screen-unlock-trigger" "$CONFIG_DIR/screen-unlock-trigger"
-chmod +x "$CONFIG_DIR/mouse-sensitivity.sh" "$CONFIG_DIR/screen-unlock-trigger"
+cp "$SCRIPT_DIR/set-mouse-speed" "$CONFIG_DIR/set-mouse-speed"
+chmod +x "$CONFIG_DIR/mouse-sensitivity.sh" "$CONFIG_DIR/screen-unlock-trigger" "$CONFIG_DIR/set-mouse-speed"
 
 # Copy example config if no config exists
 if [ ! -f "$CONFIG_DIR/networks.conf" ]; then
